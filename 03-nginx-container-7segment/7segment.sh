@@ -8,7 +8,7 @@
 #   -o COLOR      Off-segment color (default: none/transparent)
 #   -b BGCOLOR    Background color (default: none/transparent)
 #
-# Example: ./seven_segment_number.sh -w 10 -c '#00DD00' -o '#d2ffd2' -b white' 1234 num.png
+# Example: ./7segment.sh -w 10 -c '#00DD00' -o '#d2ffd2' -b white' 1234 output.png ; display output.png
 
 # === Defaults ===
 SEG_W=6
