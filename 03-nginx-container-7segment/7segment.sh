@@ -5,24 +5,24 @@
 # Options:
 #   -w WIDTH      Segment width (default: 6)
 #   -c COLOR      Segment color (default: red)
-#   -b BGCOLOR    Background color (default: none/transparent)
 #   -o COLOR      Off-segment color (default: none/transparent)
+#   -b BGCOLOR    Background color (default: none/transparent)
 #
-# Example: ./seven_segment_number.sh -w 10 -c '#00ffff' -o '#44002244' -b '#11111100' 1234 num.png
+# Example: ./seven_segment_number.sh -w 10 -c '#00DD00' -o '#d2ffd2' -b white' 1234 num.png
 
 # === Defaults ===
 SEG_W=6
 SEGMENT_COLOR="red"
-BG_COLOR="none"
 OFF_COLOR="none"
+BG_COLOR="none"
 
 # === Argument parsing ===
-while getopts "w:c:b:o:" opt; do
+while getopts "w:c:o:b:" opt; do
   case "$opt" in
     w) SEG_W="$OPTARG" ;;
     c) SEGMENT_COLOR="$OPTARG" ;;
-    b) BG_COLOR="$OPTARG" ;;
     o) OFF_COLOR="$OPTARG" ;;
+    b) BG_COLOR="$OPTARG" ;;
     *) ;;
   esac
 done
@@ -33,9 +33,9 @@ if [[ "$#" -ne 2 ]]; then
   echo "Options:"
   echo "  -w WIDTH      Segment width (default: 6)"
   echo "  -c COLOR      Segment color (default: red)"
-  echo "  -b BGCOLOR    Background color (default: none/transparent)"
   echo "  -o COLOR      Off-segment color (default: none/transparent)"
-  echo "Example: $0 -w 10 -c '#00ffff' -o '#44002244' -b '#11111100' 1234 num.png"
+  echo "  -b BGCOLOR    Background color (default: none/transparent)"
+  echo "Example: $0 -w 10 -c '#00ffff' -o '#44002244' -b '#ffffff' 1234 num.png"
   exit 1
 fi
 
@@ -88,6 +88,6 @@ for (( i=0; i<${#NUMBER}; i++ )); do
   TMP_DIGITS+=("$IMG")
 done
 
-montage "${TMP_DIGITS[@]}" -tile x1 -geometry +10+0 -background none "$OUT"
+montage "${TMP_DIGITS[@]}" -tile x1 -geometry +10+0 -background "$BG_COLOR" "$OUT"
 rm -f digit_*.png
 echo "Image saved to $OUT"
