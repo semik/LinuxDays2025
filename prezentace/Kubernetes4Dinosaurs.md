@@ -159,6 +159,7 @@ ingress:
 ![bg right height:350px](img/VisitorNo.drawio.svg)
 
 ---
+
 # Základní Debian kontainer - základ FS
 
 ```
