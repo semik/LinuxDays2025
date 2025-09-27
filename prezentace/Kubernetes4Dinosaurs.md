@@ -327,6 +327,7 @@ b5b0bce5767a  About a minute ago  /bin/sh -c #(nop) CMD ["nginx", "-g", "dae... 
 </div>
 
 ---
+
 # Otestování NGINX image
 
 ```
@@ -389,3 +390,137 @@ semik-nginx
 $
 ```
 </div>
+
+---
+# Vytvoření počítadla návštěv
+
+## skript pro generován obrázků (bash + imagemagick)
+
+```bash
+./cgi-bin/7segment.sh -w 10 \
+    -c '#00DD00' -o '#d2ffd2' \
+    -b white 01234 output.png ; display output.png
+```
+
+<div data-marpit-fragment>
+
+![](./img/VistNo-example.png)
+
+</div>
+
+---
+# Vytvoření počítadla návštěv - soubory
+
+```
+.
+├── alive.txt
+├── cgi-bin
+│   ├── 7segment.sh
+│   └── counter.sh
+├── data
+│   └── counter
+├── Dockerfile
+└── entrypoint.sh
+```
+
+`./data` - datový adresář pro počítadlo návštěv (mimo image)
+`./cgi-bin/counter.sh` - skript počítadla návštěv
+
+---
+
+# Vytvoření počítadla návštěv - Dockerfile
+
+```Dockerfile
+
+FROM semik-debian
+
+# Install busybox, bash, and any image dependencies (e.g., imagemagick, png tools, etc)
+RUN apt-get update && apt-get install -y bash busybox imagemagick && apt-get clean
+
+# Copy entrypoint script
+COPY entrypoint.sh /
+
+# Copy scripts
+COPY cgi-bin/ /app/cgi-bin/
+COPY alive.txt /app/
+
+# Make CGI executable
+RUN chmod +x /app/cgi-bin/*.sh /entrypoint.sh
+
+# Start busybox httpd with CGI enabled
+EXPOSE 8080
+
+# CMD ["busybox", "httpd", "-vv", "-f", "-p", "8080", "-h", "/app"]
+# bussybox httpd ignores TERM signal, so we need a wrapper script to handle shutdown faster
+CMD [ "/entrypoint.sh" ]
+```
+---
+
+# Vytvoření počítadla návštěv - test
+
+```
+$ podman run --rm --name semik-counter \
+  -p 8080:8080 \
+  -v $(pwd)/data:/data -e COUNTER_DIR=/data semik-counter
+[::ffff:10.0.2.100]:48136: url:/cgi-bin/counter.sh
+[::ffff:10.0.2.100]:48142: url:/cgi-bin/counter.sh
+[::ffff:10.0.2.100]:48150: url:/cgi-bin/counter.sh
+[::ffff:10.0.2.100]:48158: url:/cgi-bin/counter.sh
+```
+
+![](img/VisitNo-browser.png)
+
+---
+# podman-compose
+
+možná v další prezentaci?
+
+---
+# YAML Ain't Markup Language
+
+- čitelnost nejen strojem, ale i člověkem
+* struktura a hierarchie dat je řešena odsazením (**mezerami**, ne tabulátory)
+* neomezené úrovně vnořování
+* nahrazuje JSON konfigurace
+  * XML si pamatují už jen 🦖
+* používá se k definici konfigurací v Kubernetes (a nejen tam)
+
+---
+# Základní struktura YAML
+
+```yaml
+jmeno: "Ukázka struktury YAML"
+verze: 1.0
+cesky: true
+cislo: 42
+pole:
+  - polozka1
+  - polozka2
+hash:
+  klic1: hodnota1
+  klic2: "hodnota 2"
+dataTakJakJsou: |
+  Toto je text
+  ve kterém budou zachovány
+  nové řádky.
+dataVJednomRadku: >
+  Toto je text
+  který bude interpretován jako
+  jediný řádek.
+```
+
+---
+# Příklad z Kubernetes - Pod
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: semik-counter
+spec:
+  containers:
+    - name: semik-counter
+      image: semik-counter
+      ports:
+        - containerPort: 8080
+```

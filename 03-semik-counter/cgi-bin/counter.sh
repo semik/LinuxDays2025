@@ -1,6 +1,8 @@
 #!/bin/bash
 
-COUNTER_FILE="/tmp/counter"
+# Allow override via env or arg: $1 is optional path, else $COUNTER_DIR, else /data
+COUNTER_DIR="${1:-${COUNTER_DIR:-/tmp}}"
+COUNTER_FILE="$COUNTER_DIR/counter"
 
 # Ensure /data exists
 mkdir -p "$(dirname "$COUNTER_FILE")"
