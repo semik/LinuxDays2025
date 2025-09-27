@@ -70,11 +70,14 @@ SEGMENT_POSITIONS=(
   "$((PAD + SEG_W)) $((PAD + SEG_W + SEG_L)) $SEG_L $SEG_W"              # G
 )
 
+TMP_DIR=$(mktemp -d /tmp/7segment.XXXXXX)
+trap 'rm -rf "$TMP_DIR"' EXIT
+
 TMP_DIGITS=()
 for (( i=0; i<${#NUMBER}; i++ )); do
   CHAR="${NUMBER:$i:1}"
   SEG="${SEGMENTS[$CHAR]}"
-  IMG="digit_${i}.png"
+  IMG="${TMP_DIR}/digit_${i}.png"
   convert -size ${DIGIT_W}x${DIGIT_H} canvas:$BG_COLOR "$IMG"
   read -a ACTIVE <<< $SEG
   for s in {0..6}; do
@@ -89,5 +92,3 @@ for (( i=0; i<${#NUMBER}; i++ )); do
 done
 
 montage "${TMP_DIGITS[@]}" -tile x1 -geometry +10+0 -background "$BG_COLOR" "$OUT"
-rm -f digit_*.png
-echo "Image saved to $OUT"
