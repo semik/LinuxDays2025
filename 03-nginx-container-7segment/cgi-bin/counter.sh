@@ -37,7 +37,7 @@ b="${params[b]:-white}"
 n="$next"
 
 # Call the real script (output to temp)
-outfile=$(mktemp --suffix=.png)
+outfile=$(mktemp /tmp/counter.XXXXXX)
 ./7segment.sh -w "$w" -c "$c" -o "$o" -b "$b" "$n" "$outfile"
 
 echo "Content-Type: image/png"
