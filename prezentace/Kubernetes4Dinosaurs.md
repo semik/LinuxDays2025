@@ -524,3 +524,30 @@ spec:
       ports:
         - containerPort: 8080
 ```
+
+---
+```
+$ podman push semik75/ld25-nginx:latest
+Getting image source signatures
+
+Copying blob 8cd8bb154730 done
+Copying blob e91d164cdb11 done
+Copying config 0f252a9325 done
+Writing manifest to image destination
+Storing signatures
+$
+$ podman push semik75/ld25-counter:latest
+Getting image source signatures
+Copying blob 3c2da93b9307 done
+Copying blob 49fde82665a2 done
+Copying blob 4d47c999746d done
+Copying blob bc8a185f2edc done
+Copying blob a28687ae7ca4 done
+Copying blob 469a5aa7e0e2 skipped: already exists
+Copying config 917795cd2e done
+Writing manifest to image destination
+Storing signatures
+$
+```
+
+---

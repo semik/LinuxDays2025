@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cgi-counter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cgi-counter
+  template:
+    metadata:
+      labels:
+        app: cgi-counter
+    spec:
+      containers:
+      - name: cgi-counter
+        image: docker.io/semik75/ld25-counter:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: COUNTER_DIR
+          value: /data
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: counter-pvc

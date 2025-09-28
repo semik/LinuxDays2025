@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-static
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-static
+  template:
+    metadata:
+      labels:
+        app: nginx-static
+    spec:
+      containers:
+      - name: nginx
+        image: docker.io/semik75/ld25-nginx:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /var/www/html/index.html
+          subPath: index.html
+        - name: config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: config
+        configMap:
+          name: nginx-static
