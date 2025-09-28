@@ -510,26 +510,42 @@ dataVJednomRadku: >
 ```
 
 ---
-# Příklad z Kubernetes - Pod
+# Příklad YAML manifestu pro Kubernetes
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: semik-counter
+  name: nginx-static
 spec:
   containers:
-    - name: semik-counter
-      image: semik-counter
-      ports:
-        - containerPort: 8080
+  - image: docker.io/semik75/ld25-nginx:latest
+    name: nginx-static
+    ports:
+    - containerPort: 8080
+    volumeMounts:
+      - name: config
+        mountPath: /var/www/html/index.html
+        subPath: index.html
+  volumes:
+  - name: config
+    configMap:
+      name: nginx-static
 ```
 
 ---
+# Nahrání obrazů kontenerů do Artefact Registry
+
 ```
+$ podman login docker.io
+Username: semik75
+Password:
+Login Succeeded!
+$ podman tag semik-nginx semik75/ld25-nginx:latest
+$ podman tag semik-counter semik75/ld25-counter:latest
+$
 $ podman push semik75/ld25-nginx:latest
 Getting image source signatures
-
 Copying blob 8cd8bb154730 done
 Copying blob e91d164cdb11 done
 Copying config 0f252a9325 done
@@ -539,10 +555,7 @@ $
 $ podman push semik75/ld25-counter:latest
 Getting image source signatures
 Copying blob 3c2da93b9307 done
-Copying blob 49fde82665a2 done
-Copying blob 4d47c999746d done
-Copying blob bc8a185f2edc done
-Copying blob a28687ae7ca4 done
+...
 Copying blob 469a5aa7e0e2 skipped: already exists
 Copying config 917795cd2e done
 Writing manifest to image destination
@@ -551,3 +564,37 @@ $
 ```
 
 ---
+# První nasazení do Kubernetes
+
+```
+$ kubectl run nginx-static --image=docker.io/semik75/ld25-nginx:latest \
+  --restart=Never --port=8080
+pod/nginx-static created
+$ kubectl get pods -o wide
+NAME          READY   STATUS    RESTARTS   AGE     IP           NODE
+nginx-static  1/1     Running   0           5s     10.42.0.65   lab10
+```
+
+<div data-marpit-fragment>
+
+```
+$ kubectl port-forward nginx-static 8080:80 &
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+[1] 2474495
+```
+</div>
+<div data-marpit-fragment>
+
+```
+$ curl http://localhost:8080
+Handling connection for 8080
+<html><head>
+<title>Welcome to nginx!</title>
+...
+```
+</div>
+
+---
+
+![](img/ld25-Kubernetes.drawio.png)
