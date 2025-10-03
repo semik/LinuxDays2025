@@ -1,11 +1,12 @@
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: linuxdays2025
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     - linuxdays2025.tomasek.cz
@@ -28,3 +29,24 @@ spec:
             name: cgi-counter
             port:
               number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: linuxdays2025-alive
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: linuxdays2025.tomasek.cz
+      http:
+        paths:
+          - path: /alive.txt
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: cgi-counter
+                port:
+                  number: 8080

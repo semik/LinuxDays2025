@@ -2,7 +2,6 @@
 marp: true
 paginate: true
 theme: semikova
-
 ---
 
 # Kubernetes pro dinosaury
@@ -10,6 +9,9 @@ theme: semikova
 Jan Tomášek <jan@tomasek.cz>
 
 Linux Days 2025
+
+https://tomasek.cz/ld25
+
 &nbsp;
 &nbsp;
 &nbsp;
@@ -40,7 +42,7 @@ Linux Days 2025
 <div data-marpit-fragment>
 
 ## 3Key Company vyvíjí platformu [CZERTAINLY](https://www.czertainly.com/):
-- Digitální Certifikáty
+- Životní cyklus Digitálních Certifikátů
 - Digitální podpisy dle eIDAS
 - Open Source &  <ins>Cloud Native</ins>
 
@@ -49,17 +51,32 @@ Linux Days 2025
 
 ---
 
-# Vývoj sdílení výpočetního výkonu
-![](img/BareMetal-Virtualized-Containerized-4.png)
+# Vývoj sdílení prostředků
+![height:580px](img/BareMetal-Virtualized-Containerized-1.png)
+
+---
+
+# Vývoj sdílení prostředků
+![height:580px](img/BareMetal-Virtualized-Containerized-2.png)
+
+---
+
+# Vývoj sdílení prostředků
+![height:580px](img/BareMetal-Virtualized-Containerized-3.png)
+
+---
+
+# Vývoj sdílení prostředků
+![height:580px](img/BareMetal-Virtualized-Containerized-4.png)
 
 ---
 # Proč se zajímat o Kontejnery?
 <div class="twocols">
 
 ## Obsahují
-- aplikaci
+- **aplikaci**
+* **aktuální** verzi aplikace
 * závislosti = knihovny
-&nbsp;
 &nbsp;
 &nbsp;
 &nbsp;
@@ -73,19 +90,54 @@ Linux Days 2025
 * konfiguraci
 * kernel
 * init systém
-* ssh server
+* ssh server, ...
 </div>
 </div>
 
 ---
+# Kontejnery obsahují jen aplikaci
 
-# A proč se o Kubernetes zajímat?
+```
+$ podman exec -it semik-nginx bash
+root@7904f80d7a00:/# ps aux
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.0  14608  9096 ?        Ss   14:57   0:00 nginx: master process nginx -g daemon off;
+www-data       2  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data       3  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data       4  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data       5  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data       6  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data       7  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data       8  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data       9  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data      10  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data      11  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data      12  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data      13  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data      14  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data      15  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data      16  0.0  0.0  14980  3588 ?        S    14:57   0:00 nginx: worker process
+www-data      17  0.0  0.0  14980  3524 ?        S    14:57   0:00 nginx: worker process
+root@7904f80d7a00:/# exit
+```
+
+---
+
+# A proč se zajímat o Kubernetes?
 
 * Nejrozšířenější orchestrátor kontejnerů
-* Efektivní využití výpočetního výkonu
-* **Dokumentace** instalace aplikace
-* ...
+* Cloud Provideři
+  - Amazon EKS (Elastic Kubernetes Service)
+  - Google Kubernetes Engine (GKE)
+  - Azure Kubernetes Service (AKS)
+* On-Premise
+  - OpenShift (RedHat)
+  - RKE2 + Rancher (SUSE)
+  - K3s (Lightweight Kubernetes)
+* **Dokumentace** = předpis pro nasazení instalace aplikace
 
+
+<!--
 ---
 # Ukázka dokumentace instalace EJBCA
 
@@ -119,7 +171,7 @@ ingress:
    - hosts:
        - ejbca.3key.company
      secretName: tls-secret
-```
+``` -->
 
 ---
 # Znalosti potřebné pro Kubernetes
@@ -146,17 +198,27 @@ ingress:
 
 <div data-marpit-fragment>
 
-## 🥱 Základy verzovacích systémů
+## ~~🥱 Základy verzovacích systémů~~
 
 </div>
 
 ---
 
-# Ukázka - kontejner od samého začátku
- - nginx server
- - statická HTML stránka s počítadlem návštěv
+# Následující struktura přednášky
+ - kontainer od samého začátku
+ - kontainer s nginx serverem
+ - kontainer s počítadlem návštěv
+ - nasazení do Kubernetes
 
-![bg right height:350px](img/VisitorNo.drawio.svg)
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
+
+https://tomasek.cz/ld25
+
+![bg right height:350px](img/vistor-no-real.png)
 
 ---
 
@@ -164,6 +226,7 @@ ingress:
 
 ```
 $ sudo debootstrap --variant=minbase --arch=amd64 stable ./debian-rootfs http://deb.debian.org/debian/
+
 [sudo] password for semik:
 I: Target architecture can be executed
 I: Retrieving InRelease
@@ -304,6 +367,9 @@ ID            CREATED         CREATED BY                                     SIZ
 ```Dockerfile
 FROM semik-debian
 
+#RUN apt-get update
+#RUN apt-get install -y nginx
+#RUN apt-get clean
 RUN apt-get update && apt-get install -y nginx && apt-get clean
 
 CMD ["nginx", "-g", "daemon off;"]
@@ -471,9 +537,24 @@ $ podman run --rm --name semik-counter \
 ![](img/VisitNo-browser.png)
 
 ---
-# podman-compose
+# Takhle ne! :)
 
-možná v další prezentaci?
+- před-připravené image
+* hub.docker.com
+  - oficiální verze od autorů software
+  - uživatelské verze
+  - https://docs.docker.com/docker-hub/usage/
+* bitnami
+&nbsp;
+&nbsp;
+<div data-marpit-fragment>
+
+```
+$ podman images  | grep library\/nginx\\\|semik/ld25-nginx
+localhost/semik/ld25-nginx     latest             0f252a932576  5 days ago     346 MB
+docker.io/library/nginx        latest             203ad09fc156  7 weeks ago    197 MB
+```
+</div>
 
 ---
 # YAML Ain't Markup Language
@@ -481,9 +562,9 @@ možná v další prezentaci?
 - čitelnost nejen strojem, ale i člověkem
 * struktura a hierarchie dat je řešena odsazením (**mezerami**, ne tabulátory)
 * neomezené úrovně vnořování
-* nahrazuje JSON konfigurace
+* nahrazuje *složité* JSON konfigurace
   * XML si pamatují už jen 🦖
-* používá se k definici konfigurací v Kubernetes (a nejen tam)
+* používá se k definici objektů v Kubernetes
 
 ---
 # Základní struktura YAML
@@ -562,6 +643,49 @@ Writing manifest to image destination
 Storing signatures
 $
 ```
+---
+# kubectl - Kubernetes CLI
+
+```bash
+$ export KUBECONFIG=${HOME}/Sync/config/kube-config-lab10
+$ kubectl config set-context --current --namespace linuxdays2025
+Context "default" modified.
+$ kubectl get pods
+NAME                           READY   STATUS    RESTARTS   AGE
+cgi-counter-7dd7c9998f-7pl6n   1/1     Running   0          16h
+cgi-counter-7dd7c9998f-bslbc   1/1     Running   0          16h
+cgi-counter-7dd7c9998f-xm95g   1/1     Running   0          16h
+nginx-static-d7cb778c4-hmkxv   1/1     Running   0          16h                             #
+```
+<img src="img/kubect.png" style="width: 750px; float: right; margin-top: 8px;" />
+<!-- image from https://medium.com/@sanoj.sudo/how-kubectl-works-and-communicates-with-the-kubernetes-api-server-and-pod-creation-journey-f5fce5ff8323> -->
+
+---
+# kubectl - config
+
+```
+$ cat $KUBECONFIG
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CR...
+    server: https://46.62.xxx.yyy:6443
+  name: default
+contexts:
+- context:
+    cluster: default
+    namespace: linuxdays2025
+    user: default
+  name: default
+current-context: default
+kind: Config
+preferences: {}
+users:
+- name: default
+  user:
+    client-certificate-data: LS0tLS1CR...
+    client-key-data: LS0tLS1CR...
+```
 
 ---
 # První nasazení do Kubernetes
@@ -597,4 +721,553 @@ Handling connection for 8080
 
 ---
 
-![](img/ld25-Kubernetes.drawio.png)
+![](img/ld25-Kubernetes-colors3.drawio.png)
+
+
+---
+
+# ConfigMap #1 - declarative
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-static
+data:
+  index.html: |
+    ...
+    <h1>LinuxDays 2025</h1>
+    ...
+    <p>Návštěvníků od spuštění této stránky:</p>
+    ...
+    </body></html>
+  nginx.conf: |
+    error_log /dev/stdout info;
+    events {
+      worker_connections  1024;
+    }
+    http {
+      access_log    /dev/stdout;
+
+      server {
+        listen       8080;
+        server_name  localhost;
+
+      ...
+```
+---
+# ConfigMap #2 - imperative
+
+```bash
+$ kubectl create configmap nginx-static \
+    --from-file=index.html=/path/to/index.html \
+    --from-file=nginx.conf=/path/to/nginx.conf                                               #
+```
+
+```bash
+$ kubectl create configmap nginx-static \
+    --from-file=index.html=/path/to/index.html \
+    --from-file=nginx.conf=/path/to/nginx.conf --dry-run=client -o yaml > nginx-configmap.yaml
+```
+---
+# Secret
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: linuxdays2025-tls
+data:
+  tls.crt: LS0t...
+  tls.key: LS0t...
+```
+
+```
+$ kubectl create secret generic linuxdays2025-tls \
+    --from-file=tls.crt=/path/to/tls.crt \
+    --from-file=tls.key=/path/to/tls.key
+```
+
+---
+# ConfigMap vs Secret
+
+<div class="twocols">
+
+- konfigurační soubory
+- etcd (nešifrovaně)
+- prostý text
+- RBAC
+
+<p class="break"></p>
+<div data-marpit-fragment>
+
+- hesla, tokeny, certifikáty
+- etcd (volitelné šifrování)
+- base64
+- striktnější RBAC
+</div>
+</div>
+
+---
+# PersistentVolumeClaim
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: counter-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Mi
+```
+
+---
+
+# PersistentVolume (PV) vs PersistentVolumeClaim (PVC)
+
+<div class="twocols">
+
+- abstrakce úložiště
+- žije nezávisle na PODech
+- různé typy úložišť (NFS, iSCSI, cloudové služby, lokální disky, ...)
+- recyklace podle politiky
+  - Retain
+  - Recycle
+  - Delete
+
+<p class="break"></p>
+
+<div data-marpit-fragment>
+
+- žádost úložiště
+- dynamické přidělení
+- přístupové režimy
+  - ReadWriteOnce
+  - ReadOnlyMany
+  - ReadWriteMany
+
+&nbsp;
+</div>
+</div>
+
+---
+#  POD vs ~~ReplicaSet~~ vs Deployment
+
+<div class="twocols">
+
+- nejmenší spusitelná jednotka
+- obsahuje jeden nebo více kontejnerů
+- dočasný - "smrtelný" objekt
+- závislý na Node umírá s ním
+- nevhodný pro přímé nasazení
+&nbsp;
+<p class="break"></p>
+
+<div data-marpit-fragment>
+
+- vyšší abstrakce nad PODy
+- má na starosti aby požadovaný počet replik PODů
+- standartní způsob nasazen v produkci
+
+&nbsp;
+</div>
+</div>
+
+---
+# Deployment nginx
+
+```yaml
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: nginx-static-xxx-yyy
+  labels:
+    app: nginx-static
+spec:
+  containers:
+  - name: nginx
+    image: docker.io/semik75/ld25-nginx:latest
+    imagePullPolicy: Always
+    ports:
+    - containerPort: 8080
+    volumeMounts:
+    - name: config
+      mountPath: /var/www/html/index.html
+      subPath: index.html
+    - name: config
+      mountPath: /etc/nginx/nginx.conf
+      subPath: nginx.conf
+  volumes:
+  - name: config
+    configMap:
+      name: nginx-static
+```
+
+![bg right width:500px](img/ld25-Kubernetes-nginx2.png)
+
+---
+# Deployment counter
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cgi-counter
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cgi-counter
+  template:
+    metadata:
+      labels:
+        app: cgi-counter
+    spec:
+      containers:
+      - name: cgi-counter
+        image: docker.io/semik75/ld25-counter:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: COUNTER_DIR
+          value: /data
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: counter-pvc
+```
+
+![bg right width:500px](img/ld25-Kubernetes-counter.png)
+
+---
+
+# Service
+
+
+<div class="twocols">
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-static
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx-static
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+```
+
+<p class="break"></p>
+
+<div data-marpit-fragment>
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cgi-counter
+spec:
+  type: NodePort
+  selector:
+    app: cgi-counter
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 32025
+```
+</div>
+</div>
+
+---
+
+# Service - type: NodePort
+
+![bg center width:900px](img/NodePort.png)
+
+---
+
+# Ingress
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: linuxdays2025
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - linuxdays2025.tomasek.cz
+    secretName: linuxdays2025-tls
+  rules:
+  - host: linuxdays2025.tomasek.cz
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-static
+            port:
+              number: 8080
+      - path: /cgi-bin/counter.sh
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: cgi-counter
+            port:
+              number: 8080
+```
+
+![bg right width:500px](img/ld25-Kubernetes-ingress.png)
+
+---
+
+![](img/ld25-Kubernetes-colors3.drawio.png)
+
+---
+
+# Nasazení všech objektů
+
+```
+$ ls -1
+counter-pvc.yaml
+counter-deployment.yaml
+counter-service.yaml
+linuxdays2025-ingress.yaml
+nginx-configmap.yaml
+nginx-deployment.yaml
+nginx-service.yaml
+```
+<div data-marpit-fragment>
+
+```
+$ for i in *.yaml ; do kubectl apply -f "$i" ; done
+deployment.apps/cgi-counter created
+persistentvolumeclaim/counter-pvc created
+service/cgi-counter created
+ingress.networking.k8s.io/linuxdays2025 created
+ingress.networking.k8s.io/linuxdays2025-alive created
+configmap/nginx-static created
+deployment.apps/nginx-static created
+service/nginx-static created
+```
+
+</div>
+
+---
+
+# Zobrazení nasazených objektů
+
+```
+$ kubectl get all,configmap,pvc,ingress
+NAME                               READY   STATUS    RESTARTS   AGE
+pod/cgi-counter-7dd7c9998f-7pl6n   1/1     Running   0          3m43s
+pod/cgi-counter-7dd7c9998f-bslbc   1/1     Running   0          3m43s
+pod/cgi-counter-7dd7c9998f-xm95g   1/1     Running   0          3m43s
+pod/nginx-static-d7cb778c4-hmkxv   1/1     Running   0          3m41s
+
+NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/cgi-counter    NodePort    10.43.5.65     <none>        8080:32025/TCP   3m43s
+service/nginx-static   ClusterIP   10.43.49.102   <none>        8080/TCP         3m41s
+
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/cgi-counter    3/3     3            3           3m44s
+deployment.apps/nginx-static   1/1     1            1           3m42s
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/cgi-counter-7dd7c9998f   3         3         3       3m44s
+replicaset.apps/nginx-static-d7cb778c4   1         1         1       3m42s
+
+NAME                         DATA   AGE
+configmap/kube-root-ca.crt   1      5d
+configmap/nginx-static       2      3m42s
+
+NAME                       TYPE                DATA   AGE
+secret/linuxdays2025-tls   kubernetes.io/tls   2      4d10h
+
+NAME                                STATUS   VOLUME             CAPACITY   ACCESS MODES   STORAGECLASS
+persistentvolumeclaim/counter-pvc   Bound    pvc-1a02c453...    1Mi        RWO            local-path
+
+NAME                          CLASS   HOSTS                      ADDRESS         PORTS     AGE
+ingress/linuxdays2025         nginx   linuxdays2025.tomasek.cz   46.62.206.246   80, 443   3m43s
+```
+---
+# Detaily o deployment.apps/cgi-counter
+```
+$ kubectl describe deployment.apps/cgi-counter
+Name:                   cgi-counter
+Namespace:              linuxdays2025
+CreationTimestamp:      Thu, 02 Oct 2025 19:26:20 +0200
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Containers:
+   cgi-counter:
+    Image:      docker.io/semik75/ld25-counter:latest
+    Port:       8080/TCP
+    Environment:
+      COUNTER_DIR:  /data
+    Mounts:
+      /data from data (rw)
+  Volumes:
+   data:
+    Type:          PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:     counter-pvc
+    ReadOnly:      false
+Conditions:
+NewReplicaSet:   cgi-counter-7dd7c9998f (3/3 replicas created)
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  9m8s  deployment-controller  Scaled up replica set cgi-counter-7dd7c9998f from 0 to 3
+```
+
+---
+# Interaktivní shell v kontejneru
+
+```
+$ kubectl exec cgi-counter-7dd7c9998f-7pl6n -it -- bash
+root@cgi-counter-7dd7c9998f-7pl6n:/# cd /data/
+root@cgi-counter-7dd7c9998f-7pl6n:/data# cat counter
+00004
+```
+
+<div data-marpit-fragment>
+
+```
+$ kubectl -n kube-system exec pod/etcd-lab10 -it -- sh
+error: Internal error occurred: Internal error occurred: error executing command
+in container: failed to exec in container: failed to start exec
+"128c5ae737916eb778b82feadb6b6cd66c545c83d0b3f667a2e02492a4166c4c": OCI runtime
+exec failed: exec failed: unable to start container process: exec: "sh": executable
+file not found in $PATH
+
+```
+</div>
+
+---
+
+<!-- # Architektura Kubernetes -->
+
+![bg center height:90%](img/kubernetes-cluster-architecture.svg)
+
+<!-- image from https://kubernetes.io/docs/concepts/architecture/ -->
+
+---
+# Logging
+
+- každý contejner má svůj stdout/stderr
+* logy jsou dočasné - žijí s PODem
+* `kubectl logs <pod-name> [-c <container-name>] [--previous]`
+* logovací agenti (Filebeat+Logstash, …) sbírají logy a odesílají je do centrálního úložiště
+* formáty: text, JSON
+* centrální úložiště: Elasticsearch, …
+
+<div data-marpit-fragment>
+
+```
+$ kubectl logs nginx-static-d7cb778c4-hmkxv --tail 5
+10.42.0.106 - - [02/Oct/2025:22:31:50 +0000] "GET / HTTP/1.1" 200 506 "-" "-"
+2025/10/02 22:32:50 [info] 7#7: *6 client 10.42.0.106 closed keepalive connection
+10.42.0.106 - - [03/Oct/2025:10:26:50 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
+10.42.0.106 - - [03/Oct/2025:10:26:53 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
+10.42.0.106 - - [03/Oct/2025:10:26:54 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
+```
+</div>
+
+---
+# Jak zjistit, že něco negunguje?
+```
+$ kubectl -A get events
+NAMESPACE   LAST SEEN                TYPE      REASON      OBJECT                                      MESSAGE
+ejbcace     38m (x1232 over 14d)     Normal    Started     Pod/ejbca-...   Started container ejbca-community-helm
+ejbcace     3m59s (x1234 over 14d)   Normal    Killing     Pod/ejbca-...   Container ejbca-community-helm failed startup probe, will be restarted
+ejbcace     3m29s (x1234 over 14d)   Normal    Pulled      Pod/ejbca-...   Container image "keyfactor/ejbca-ce:8.2.0.1" already present on machine
+ejbcace     3m29s (x1234 over 14d)   Normal    Created     Pod/ejbca-...   Created container: ejbca-community-helm
+ejbcace     1s (x617097 over 14d)    Warning   Unhealthy   Pod/ejbca-...   Startup probe failed: dial tcp 10.42.0.119:8443: connect: connection refused
+$
+$ kubectl -n ejbcace get pods
+NAME                                    READY   STATUS    RESTARTS           AGE
+ejbca-community-helm-76fc567d4d-nkfqd   0/1     Running   1816 (9m17s ago)   32d
+
+```
+
+<div data-marpit-fragment>
+
+# A proč nefunguje?
+```
+$ kubectl -n ejbcace logs pod/ejbca-community-helm-76fc567d4d-nkfqd --tail 5
+2025-10-03 10:41:37,572+0000 INFO  [org.apache.commons.beanutils.FluentPropertyBeanIntrospector] (main) Error when creating ...
+2025-10-03 10:41:38,000+0000 ERROR [org.ejbca.ui.cli.jdbc.JdbcTool] (main) FATAL: password authentication failed for user "ejbcace"
+2025-10-03 10:41:38,000+0000 INFO  [org.ejbca.ui.cli.jdbc.JdbcTool] (main) Done.
+2025-10-03 10:41:38,030+0000 INFO  [/start.sh] (process:1) Waiting for database 'jdbc:postgresql://.../ejbcace' to become available.
+```
+</div>
+
+---
+# Co dělat, když se něco nestartuje?
+
+```
+$ kubectl get pods
+NAME                                READY   STATUS        RESTARTS       AGE
+qes-nginx-ingress-9589b89b5-rmngv   2/2     Running       1 (143m ago)   144m
+signserver-66d7bbb74f-hw5bv         0/6     Pending       0              50s
+
+$ kubectl describe pod signserver-66d7bbb74f-hw5bv
+Events:
+  Type     Reason            Age   From                   Message
+  ----     ------            ----  ----                   -------
+  Warning  FailedScheduling  25s   gke.io/opt-util-sched  0/8 nodes are available: 8 Insufficient cpu,
+                                                          8 Insufficient memory.
+                                                          preemption: 0/8 nodes are available: 8
+                                                          No preemption victims found for incoming pod.
+  Normal   TriggeredScaleUp  23s   cluster-autoscaler     Pod triggered scale-up: [{https://www.googleapis.com...}]
+```
+
+<!-- ---
+
+# k9s - terminal UI pro Kubernetes
+
+![](img/k9s.png) -->
+
+---
+
+# Jak dál?
+
+- Kurz: [Certified Kubernetes Administrator (CKA) with Practice Tests](https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests) od Mumshad Mannambeth na [Udemy](https://www.udemy.com/)
+* Vlastní Kubernetes:
+  - [minikube](https://minikube.sigs.k8s.io/docs/) - ve virtuálu
+  * [RKE2](https://docs.rke2.io/) - na fyzickém HW nebo VM
+  * [CZERTAINLY Appliance](https://docs.czertainly.com/docs/certificate-key/installation-guide/deployment/deployment-appliance/initialization), viz [přednáška na LinuxDays 2023](https://pretalx.linuxdays.cz/linuxdays-2023/talk/F37GKW/)
+* Cloudové Kubernetes
+  - OpenShift - [na 30d znovu a znovu](https://console.redhat.com/openshift/sandbox)
+* [Helm]() - package manager pro Kubernetes
+* https://github.com/semik/LinuxDays2026
+
+---
+# Otázky?
+
+Jan Tomášek <jan@tomasek.cz>
+
+https://tomasek.cz/ld25
+
+https://github.com/semik/LinuxDays2025
+
+https://linuxdays2025.tomasek.cz/

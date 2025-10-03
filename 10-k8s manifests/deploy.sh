@@ -1,11 +1,11 @@
 #!/bin/bash
 
-kubectl apply -f nginx-configmap.yaml
-kubectl apply -f nginx-deployment.yaml
-kubectl apply -f nginx-service.yaml
+kubectl delete deployment.apps/cgi-counter deployment.apps/nginx-static \
+    service/cgi-counter service/nginx-static pvc/counter-pvc \
+    configmap/nginx-static ingress/linuxdays2025 \
+    ingress/linuxdays2025-alive --ignore-not-found
 
-kubectl apply -f counter-pvc.yaml
-kubectl apply -f counter-deployment.yaml
-kubectl apply -f counter-service.yaml
-
-kubectl apply -f linuxdays2025-ingress.yaml
+for i in *.yaml
+do
+    kubectl apply -f "$i"
+done
