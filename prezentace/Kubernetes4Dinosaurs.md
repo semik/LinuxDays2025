@@ -581,11 +581,11 @@ hash:
   klic1: hodnota1
   klic2: "hodnota 2"
 dataTakJakJsou: |
-  Toto je text
+  Toto je text,
   ve kterém budou zachovány
   nové řádky.
 dataVJednomRadku: >
-  Toto je text
+  Toto je text,
   který bude interpretován jako
   jediný řádek.
 ```
@@ -871,7 +871,7 @@ spec:
 
 - vyšší abstrakce nad PODy
 - má na starosti aby požadovaný počet replik PODů
-- standartní způsob nasazen v produkci
+- standardní způsob nasazení v produkci
 
 &nbsp;
 </div>
@@ -1222,7 +1222,7 @@ $ kubectl -n ejbcace logs pod/ejbca-community-helm-76fc567d4d-nkfqd --tail 5
 </div>
 
 ---
-# Co dělat, když se něco nestartuje?
+# Co dělat, když něco nestartuje?
 
 ```
 $ kubectl get pods
