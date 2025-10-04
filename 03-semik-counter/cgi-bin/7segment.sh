@@ -1,28 +1,31 @@
 #!/bin/bash
-# Usage: ./seven_segment_number.sh [OPTIONS] <number> <output_image.png>
-# Example: ./seven_segment_number.sh 42 output.png
+# Usage: ./7segment.sh [OPTIONS] <number> <output_image.png>
+# Example: ./7segment.sh 42 output.png
 #
 # Options:
 #   -w WIDTH      Segment width (default: 6)
 #   -c COLOR      Segment color (default: red)
 #   -o COLOR      Off-segment color (default: none/transparent)
 #   -b BGCOLOR    Background color (default: none/transparent)
+#   -H            Add hostname to the lower right corner (optional)
 #
-# Example: ./7segment.sh -w 10 -c '#00DD00' -o '#d2ffd2' -b white' 1234 output.png ; display output.png
+# Example: ./7segment.sh -w 10 -c '#00DD00' -o '#d2ffd2' -b white -H 1234 output.png ; display output.png
 
 # === Defaults ===
 SEG_W=6
 SEGMENT_COLOR="red"
 OFF_COLOR="none"
 BG_COLOR="none"
+ADD_HOSTNAME=0
 
 # === Argument parsing ===
-while getopts "w:c:o:b:" opt; do
+while getopts "w:c:o:b:H" opt; do
   case "$opt" in
     w) SEG_W="$OPTARG" ;;
     c) SEGMENT_COLOR="$OPTARG" ;;
     o) OFF_COLOR="$OPTARG" ;;
     b) BG_COLOR="$OPTARG" ;;
+    H) ADD_HOSTNAME=1 ;;
     *) ;;
   esac
 done
@@ -35,7 +38,8 @@ if [[ "$#" -ne 2 ]]; then
   echo "  -c COLOR      Segment color (default: red)"
   echo "  -o COLOR      Off-segment color (default: none/transparent)"
   echo "  -b BGCOLOR    Background color (default: none/transparent)"
-  echo "Example: $0 -w 10 -c '#00ffff' -o '#44002244' -b '#ffffff' 1234 num.png"
+  echo "  -H            Add hostname to the lower right corner (optional)"
+  echo "Example: $0 -w 10 -c '#00ffff' -o '#440022' -b '#ffffff' -H 1234 num.png"
   exit 1
 fi
 
@@ -92,3 +96,15 @@ for (( i=0; i<${#NUMBER}; i++ )); do
 done
 
 montage "${TMP_DIGITS[@]}" -tile x1 -geometry +10+0 -background "$BG_COLOR" "$OUT"
+
+if [[ "$ADD_HOSTNAME" -eq 1 ]]; then
+  HOST=$(hostname | sed "s/.*-//")
+  FONT_SIZE=24
+  PADDING=0
+  convert "$OUT" \
+    -gravity Southeast \
+    -fill 'rgba(0,0,0,0.6)' \
+    -pointsize $FONT_SIZE \
+    -annotate +$PADDING+$PADDING "$HOST" \
+    "$OUT"
+fi

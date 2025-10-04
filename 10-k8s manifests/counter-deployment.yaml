@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: cgi-counter
-        image: docker.io/semik75/ld25-counter:latest
+        image: docker.io/semik75/ld25-counter:0.20
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

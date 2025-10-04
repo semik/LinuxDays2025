@@ -34,13 +34,17 @@ w="${params[w]:-10}"
 c="${params[c]:-#00DD00}"
 o="${params[o]:-#d2ffd2}"
 b="${params[b]:-white}"
+H="${params[H]:-'0'}"
+if [ "$H" != "0" ]; then
+  H="-H"
+fi
 
 # Use the incremented counter as the number
 n="$next"
 
 # Call the real script (output to temp)
 outfile=$(mktemp /tmp/counter.XXXXXX)
-./7segment.sh -w "$w" -c "$c" -o "$o" -b "$b" "$n" "$outfile"
+./7segment.sh -w "$w" -c "$c" -o "$o" -b "$b" "$H" "$n" "$outfile"
 
 echo "Content-Type: image/png"
 echo
