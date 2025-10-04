@@ -6,19 +6,14 @@ theme: semikova
 
 # Kubernetes pro dinosaury
 
-Jan Tomášek <jan@tomasek.cz>
+Jan Tomášek
+<jan@tomasek.cz>
+&nbsp;
 
 Linux Days 2025
 
 https://tomasek.cz/ld25
 
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
 &nbsp;
 &nbsp;
 &nbsp;
@@ -216,7 +211,7 @@ ingress:
 &nbsp;
 
 
-https://tomasek.cz/ld25
+https://linuxdays2025.tomasek.cz/
 
 ![bg right height:350px](img/vistor-no-real.png)
 
@@ -550,8 +545,8 @@ $ podman run --rm --name semik-counter \
 <div data-marpit-fragment>
 
 ```
-$ podman images  | grep library\/nginx\\\|semik/ld25-nginx
-localhost/semik/ld25-nginx     latest             0f252a932576  5 days ago     346 MB
+$ podman images  | grep library\/nginx\\\|semik75/ld25-nginx
+localhost/semik75/ld25-nginx   latest             0f252a932576  5 days ago     346 MB
 docker.io/library/nginx        latest             203ad09fc156  7 weeks ago    197 MB
 ```
 </div>
@@ -1254,12 +1249,12 @@ Events:
 - Kurz: [Certified Kubernetes Administrator (CKA) with Practice Tests](https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests) od Mumshad Mannambeth na [Udemy](https://www.udemy.com/)
 * Vlastní Kubernetes:
   - [minikube](https://minikube.sigs.k8s.io/docs/) - ve virtuálu
-  * [RKE2](https://docs.rke2.io/) - na fyzickém HW nebo VM
-  * [CZERTAINLY Appliance](https://docs.czertainly.com/docs/certificate-key/installation-guide/deployment/deployment-appliance/initialization), viz [přednáška na LinuxDays 2023](https://pretalx.linuxdays.cz/linuxdays-2023/talk/F37GKW/)
+  - [Talos Linux](https://talos.dev/) - na fyzickém HW nebo VM
+  - [RKE2](https://docs.rke2.io/) - klasický Linux na fyzickém HW nebo VM
+  - [CZERTAINLY Appliance](https://docs.czertainly.com/docs/certificate-key/installation-guide/deployment/deployment-appliance/initialization), viz [přednáška na LinuxDays 2023](https://pretalx.linuxdays.cz/linuxdays-2023/talk/F37GKW/)
 * Cloudové Kubernetes
   - OpenShift - [na 30d znovu a znovu](https://console.redhat.com/openshift/sandbox)
 * [Helm]() - package manager pro Kubernetes
-* https://github.com/semik/LinuxDays2026
 
 ---
 # Otázky?
@@ -1271,3 +1266,14 @@ https://tomasek.cz/ld25
 https://github.com/semik/LinuxDays2025
 
 https://linuxdays2025.tomasek.cz/
+
+<div data-marpit-fragment>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
+## Děkuji za příležitost přednášet na LinuxDays 2025.
+
+</div>
